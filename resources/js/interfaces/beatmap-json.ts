@@ -15,6 +15,7 @@ interface BeatmapJsonAvailableIncludes {
   checksum: string | null;
   failtimes: BeatmapFailTimesArray;
   max_combo: number;
+  ratings: number[];
   user: UserJson;
 }
 
