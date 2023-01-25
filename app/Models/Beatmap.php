@@ -273,6 +273,25 @@ class Beatmap extends Model
         };
     }
 
+    public function maxCombo()
+    {
+        if (!$this->convert && array_key_exists('max_combo', $this->attributes)) {
+            return $this->attributes['max_combo'];
+        }
+
+        if ($this->relationLoaded('baseMaxCombo')) {
+            $maxCombo = $this->baseMaxCombo->firstWhere('mode', $this->playmode);
+        } else {
+            $maxCombo = $this->difficultyAttribs()
+                ->mode($this->playmode)
+                ->noMods()
+                ->maxCombo()
+                ->first();
+        }
+
+        return $maxCombo?->value;
+    }
+
     public function ratingsCount()
     {
         $ratings = [];
@@ -297,25 +316,6 @@ class Beatmap extends Model
         }
 
         return $ratings;
-    }
-
-    public function maxCombo()
-    {
-        if (!$this->convert && array_key_exists('max_combo', $this->attributes)) {
-            return $this->attributes['max_combo'];
-        }
-
-        if ($this->relationLoaded('baseMaxCombo')) {
-            $maxCombo = $this->baseMaxCombo->firstWhere('mode', $this->playmode);
-        } else {
-            $maxCombo = $this->difficultyAttribs()
-                ->mode($this->playmode)
-                ->noMods()
-                ->maxCombo()
-                ->first();
-        }
-
-        return $maxCombo?->value;
     }
 
     public function setOwner($newUserId)
