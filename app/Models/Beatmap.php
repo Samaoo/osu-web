@@ -266,7 +266,7 @@ class Beatmap extends Model
             'scoresBestMania',
             'scoresBestOsu',
             'scoresBestTaiko',
-            'userRatings' => $this->getRelationValue($key),
+            'userRatings',
             'user' => $this->getRelationValue($key),
         };
     }
