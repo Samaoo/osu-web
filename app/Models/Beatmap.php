@@ -39,8 +39,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $passcount
  * @property int $playcount
  * @property int $playmode
+ * @property float $rating
  * @property int $score_version
  * @property int $total_length
+ * @property \Illuminate\Database\Eloquent\Collection $userRatings BeatmapsetUserRating
  * @property int $user_id
  * @property string $version
  * @property string|null $youtube_preview
