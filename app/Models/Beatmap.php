@@ -212,6 +212,11 @@ class Beatmap extends Model
         return $this->playmode === static::MODES['osu'];
     }
 
+    public function userRatings()
+    {
+        return $this->hasMany(BeatmapUserRating::class);
+    }
+
     public function getAttribute($key)
     {
         return match ($key) {
@@ -261,8 +266,35 @@ class Beatmap extends Model
             'scoresBestMania',
             'scoresBestOsu',
             'scoresBestTaiko',
+            'userRatings' => $this->getRelationValue($key),
             'user' => $this->getRelationValue($key),
         };
+    }
+
+    public function ratingsCount()
+    {
+        $ratings = [];
+
+        for ($i = 0; $i <= 10; $i++) {
+            $ratings[$i] = 0;
+        }
+
+        if ($this->relationLoaded('userRatings')) {
+            foreach ($this->userRatings as $userRating) {
+                $ratings[$userRating->rating]++;
+            }
+        } else {
+            $userRatings = $this->userRatings()
+                ->select('rating', DB::raw('count(*) as count'))
+                ->groupBy('rating')
+                ->get();
+
+            foreach ($userRatings as $rating) {
+                $ratings[$rating->rating] = $rating->count;
+            }
+        }
+
+        return $ratings;
     }
 
     public function maxCombo()
