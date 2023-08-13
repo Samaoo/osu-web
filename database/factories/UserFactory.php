@@ -7,14 +7,32 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Libraries\Fulfillments\ApplySupporterTag;
+use App\Libraries\User\CountryChangeTarget;
 use App\Models\Country;
 use App\Models\User;
 use App\Models\UserAccountHistory;
+use App\Models\UserCountryHistory;
 use App\Models\UserStatistics\Model as UserStatisticsModel;
 
 class UserFactory extends Factory
 {
     const DEFAULT_PASSWORD = 'password';
+
+    public static function createRecentCountryHistory(User $user, ?string $country, ?int $months): void
+    {
+        $months ??= CountryChangeTarget::minMonths();
+        $country ??= Country::factory()->create()->getKey();
+        $currentMonth = CountryChangeTarget::currentMonth();
+        $userId = $user->getKey();
+        for ($i = 0; $i < $months; $i++) {
+            UserCountryHistory::create([
+                'country_acronym' => $country,
+                'user_id' => $userId,
+                'year_month' => $currentMonth->subMonths($i),
+            ]);
+        }
+    }
 
     private static function defaultPasswordHash()
     {
@@ -76,7 +94,10 @@ class UserFactory extends Factory
 
     public function supporter()
     {
-        return $this->state(['osu_subscriber' => true, 'osu_subscriptionexpiry' => now()->addMonthsNoOverflow(1)]);
+        return $this->state([
+            'osu_subscriber' => true,
+            'osu_subscriptionexpiry' => ApplySupporterTag::addDuration(now()->floorSecond(), 1),
+        ]);
     }
 
     public function tournamentBanned()

@@ -1,7 +1,7 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the GNU Affero General Public License v3.0.
 // See the LICENCE file in the repository root for full licence text.
 
-import { SelectOptions } from 'components/select-options';
+import SelectOptions from 'components/select-options';
 import { route } from 'laroute';
 import { action, computed, makeObservable, observable } from 'mobx';
 import { observer } from 'mobx-react';
@@ -41,15 +41,18 @@ export const reportableTypeToGroupKey = {
 export type ReportableType = keyof typeof reportableTypeToGroupKey;
 type GroupKey = typeof reportableTypeToGroupKey[ReportableType];
 
+// intended to be in display order, not alphabetical order.
+/* eslint-disable sort-keys */
 const availableOptions = {
   Cheating: trans('users.report.options.cheating'),
-  Insults: trans('users.report.options.insults'),
   MultipleAccounts: trans('users.report.options.multiple_accounts'),
-  Nonsense: trans('users.report.options.nonsense'),
-  Other: trans('users.report.options.other'),
+  Insults: trans('users.report.options.insults'),
   Spam: trans('users.report.options.spam'),
   UnwantedContent: trans('users.report.options.unwanted_content'),
+  Nonsense: trans('users.report.options.nonsense'),
+  Other: trans('users.report.options.other'),
 } as const;
+/* eslint-enable sort-keys */
 
 const availableOptionsByGroupKey: Partial<Record<GroupKey, (keyof typeof availableOptions)[]>> = {
   beatmapset: ['UnwantedContent', 'Other'],
@@ -78,6 +81,10 @@ export default class ReportForm extends React.Component<Props> {
   @observable private disabled = false;
   @observable private selectedReason = this.options[0];
   private timeout: number | undefined;
+
+  private get canSubmit() {
+    return !this.disabled && this.comments.length > 0;
+  }
 
   private get groupKey() {
     return reportableTypeToGroupKey[this.props.reportableType];
@@ -182,7 +189,7 @@ export default class ReportForm extends React.Component<Props> {
             <div className={`${bn}__row`}>
               <SelectOptions
                 blackout={false}
-                bn='report-form-select-options'
+                modifiers='report'
                 onChange={this.handleReasonChange}
                 options={this.options}
                 selected={this.selectedReason}
@@ -205,7 +212,7 @@ export default class ReportForm extends React.Component<Props> {
         <div className={`${bn}__row ${bn}__row--buttons`}>
           <button
             className={`${bn}__button ${bn}__button--report`}
-            disabled={this.disabled || this.comments.length === 0}
+            disabled={!this.canSubmit}
             onClick={this.handleSubmit}
             type='button'
           >

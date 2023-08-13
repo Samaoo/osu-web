@@ -37,6 +37,7 @@ return [
         'blocked_count' => '',
         'hide_profile' => '',
         'hide_comment' => '',
+        'forum_post_text' => '',
         'not_blocked' => '',
         'show_profile' => '',
         'show_comment' => '',
@@ -48,6 +49,7 @@ return [
     ],
 
     'card' => [
+        'gift_supporter' => '',
         'loading' => '',
         'send_message' => '',
     ],
@@ -158,6 +160,7 @@ return [
     'restricted_banner' => [
         'title' => '',
         'message' => '',
+        'message_link' => '',
     ],
     'show' => [
         'age' => '',

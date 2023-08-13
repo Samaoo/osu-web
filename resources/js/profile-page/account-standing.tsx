@@ -4,7 +4,7 @@
 import ProfilePageExtraSectionTitle from 'components/profile-page-extra-section-title';
 import StringWithComponent from 'components/string-with-component';
 import TimeWithTooltip from 'components/time-with-tooltip';
-import { UserLink } from 'components/user-link';
+import UserLink from 'components/user-link';
 import UserAccountHistoryJson from 'interfaces/user-account-history-json';
 import { computed } from 'mobx';
 import { observer } from 'mobx-react';
@@ -56,7 +56,7 @@ const ColumnLength = ({ history }: ColumnProps) => {
   if (history.type === 'restriction' || history.permanent) {
     return (
       <div className={`${bn}__action ${bn}__action--restriction`}>
-        {trans('users.show.extra.account_standing.recent_infringements.length_permanent')}
+        {trans('users.show.extra.account_standing.recent_infringements.length_indefinite')}
       </div>
     );
   }

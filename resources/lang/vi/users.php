@@ -37,6 +37,7 @@ return [
         'blocked_count' => 'người dùng đã bị chặn (:count)',
         'hide_profile' => 'Ẩn trang cá nhân',
         'hide_comment' => 'ẩn',
+        'forum_post_text' => 'Bài viết này được ẩn.',
         'not_blocked' => 'Người dùng này chưa bị chặn.',
         'show_profile' => 'Hiển thị trang cá nhân',
         'show_comment' => 'hiện',
@@ -48,22 +49,23 @@ return [
     ],
 
     'card' => [
+        'gift_supporter' => 'Tặng osu!supporter',
         'loading' => 'Đang tải...',
         'send_message' => 'Gửi tin nhắn',
     ],
 
     'create' => [
         'form' => [
-            'password' => '',
-            'password_confirmation' => '',
-            'submit' => '',
-            'user_email' => '',
-            'user_email_confirmation' => '',
-            'username' => '',
+            'password' => 'mật khẩu',
+            'password_confirmation' => 'xác nhận mật khẩu',
+            'submit' => 'tạo tài khoản',
+            'user_email' => 'email',
+            'user_email_confirmation' => 'xác nhận email',
+            'username' => 'tên người dùng',
 
             'tos_notice' => [
-                '_' => '',
-                'link' => '',
+                '_' => 'khi tạo tài khoản bạn đồng ý với :link',
+                'link' => 'điều khoản dịch vụ',
             ],
         ],
     ],
@@ -158,6 +160,7 @@ return [
     'restricted_banner' => [
         'title' => 'Tài khoản của bạn đã bị hạn chế!',
         'message' => 'Trong khi bị hạn chế, Bạn sẽ không thể tương tác với những người chơi khác và chỉ có bạn thấy được điểm của bạn. Đây thường là kết quả của một quá trình tự động và thường sẽ được gỡ bỏ trong vòng 24 giờ. Nếu bạn muốn kháng nghị về sự hạn chế này, vui lòng <a href="mailto:accounts@ppy.sh">liên hệ hỗ trợ</a>.',
+        'message_link' => 'Kiểm tra trang này để biết thêm chi tiết.',
     ],
     'show' => [
         'age' => ':age tuổi',
@@ -467,8 +470,8 @@ return [
         'offline' => 'Offline',
     ],
     'store' => [
-        'from_client' => '',
-        'from_web' => '',
+        'from_client' => 'vui lòng đăng kí thông qua game!',
+        'from_web' => 'vui lòng hoàn thành đăng kí thông qua trang web osu!',
         'saved' => 'Đã tạo người dùng',
     ],
     'verify' => [

@@ -12,21 +12,6 @@ declare module 'mod-names.json' {
 // Scoping to prevent global type import pollution.
 // There interfaces are only used in this file.
 declare module 'legacy-modules' {
-  type BeatmapsetDiscussionJson = import('interfaces/beatmapset-discussion-json').default;
-
-  interface BeatmapDiscussionHelperClass {
-    url(options: any, useCurrent?: boolean): string;
-    urlParse(urlString: string, discussions?: BeatmapsetDiscussionJson[] | null, options?: any): {
-      beatmapId?: number;
-      beatmapsetId?: number;
-      discussionId?: number;
-      filter: string;
-      mode: string;
-      postId?: number;
-      user?: number;
-    };
-  }
-
   interface TooltipDefault {
     remove: (el: HTMLElement) => void;
   }
@@ -37,6 +22,11 @@ interface JQueryStatic {
   publish: (eventName: string, data?: any) => void;
   subscribe: (eventName: string, handler: (...params: any[]) => void) => void;
   unsubscribe: (eventName: string, handler?: unknown) => void;
+}
+
+// @types/jquery.scrollto doesn't contain the interrupt option.
+interface ScrollToOptions {
+  interrupt?: boolean;
 }
 
 interface Window {
@@ -64,6 +54,5 @@ declare const Turbolinks: import('turbolinks').default;
 declare const tooltipDefault: import('legacy-modules').TooltipDefault;
 
 // external (to typescript) classes
-declare const BeatmapDiscussionHelper: import('legacy-modules').BeatmapDiscussionHelperClass;
 declare const fallbackLocale: string;
 declare const currentLocale: string;

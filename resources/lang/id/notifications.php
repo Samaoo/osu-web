@@ -11,7 +11,17 @@ return [
     'none' => 'Tidak ada notifikasi',
     'see_all' => 'Lihat riwayat notifikasi',
     'see_channel' => 'Buka jendela chat',
-    'verifying' => 'Harap verifikasi sesi untuk melihat notifikasi',
+    'verifying' => 'Silakan verifikasi sesi untuk melihat notifikasi',
+
+    'action_type' => [
+        '_' => 'semua',
+        'beatmapset' => 'beatmap',
+        'build' => 'versi rilis',
+        'channel' => 'percakapan',
+        'forum_topic' => 'forum',
+        'news_post' => 'berita',
+        'user' => 'profil',
+    ],
 
     'filters' => [
         '_' => 'semua notifikasi',
@@ -143,15 +153,6 @@ return [
             ],
         ],
 
-        'legacy_pm' => [
-            '_' => 'Forum PM',
-
-            'legacy_pm' => [
-                '_' => '',
-                'legacy_pm' => ':count_delimited pesan yang belum dibaca.|:count_delimited pesan yang belum dibaca.',
-            ],
-        ],
-
         'user' => [
             'user_beatmapset_new' => [
                 '_' => 'Beatmap baru',
@@ -209,6 +210,10 @@ return [
         ],
 
         'channel' => [
+            'announcement' => [
+                'announce' => 'Terdapat pengumuman baru pada ":name"',
+            ],
+
             'channel' => [
                 'pm' => 'Kamu menerima pesan baru dari :username',
             ],

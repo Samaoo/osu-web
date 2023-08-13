@@ -7,7 +7,8 @@ import BigButton from 'components/big-button';
 import { trim } from 'lodash';
 import { action, autorun, computed, makeObservable, reaction } from 'mobx';
 import { disposeOnUnmount, observer } from 'mobx-react';
-import Message, { maxLength } from 'models/chat/message';
+import { maxMessageLength } from 'models/chat/channel';
+import Message from 'models/chat/message';
 import core from 'osu-core-singleton';
 import * as React from 'react';
 import TextareaAutosize from 'react-autosize-textarea';
@@ -57,7 +58,7 @@ export default class InputBox extends React.Component<Props> {
 
     disposeOnUnmount(
       this,
-      reaction(() => core.dataStore.chatState.selectedChannel, (newValue, oldValue) => {
+      reaction(() => this.currentChannel, (newValue, oldValue) => {
         if (newValue != null && newValue !== oldValue && core.windowSize.isDesktop) {
           this.focusInput();
         }
@@ -112,7 +113,7 @@ export default class InputBox extends React.Component<Props> {
           autoComplete='off'
           className={classWithModifiers('chat-input__box', { disabled: this.inputDisabled })}
           disabled={this.inputDisabled}
-          maxLength={maxLength}
+          maxLength={channel?.messageLengthLimit ?? maxMessageLength}
           maxRows={channel?.type === 'ANNOUNCE' ? 10 : 3}
           name='textbox'
           onChange={this.handleChange}
@@ -137,7 +138,7 @@ export default class InputBox extends React.Component<Props> {
   // TODO: move to channel?
   @action
   sendMessage(messageText?: string) {
-    if (core.dataStore.chatState.selectedChannel == null
+    if (this.currentChannel == null
       || messageText == null
       || !present(trim(messageText))) {
       return;
@@ -163,12 +164,15 @@ export default class InputBox extends React.Component<Props> {
 
     const message = new Message();
     message.senderId = core.currentUserOrFail.id;
-    message.channelId = core.dataStore.chatState.selectedChannel.channelId;
+    message.channelId = this.currentChannel.channelId;
     message.content = messageText;
 
     // Technically we don't need to check command here, but doing so in case we add more commands
     if (isCommand && command === 'me') {
       message.isAction = true;
+      message.type = 'action';
+    } else {
+      message.type = this.currentChannel.type === 'ANNOUNCE' ? 'markdown' : 'plain';
     }
 
     if (this.currentChannel != null) {

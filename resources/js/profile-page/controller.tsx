@@ -15,7 +15,7 @@ import { ProfileExtraPage, profileExtraPages } from 'interfaces/user-extended-js
 import UserMonthlyPlaycountJson from 'interfaces/user-monthly-playcount-json';
 import UserReplaysWatchedCountJson from 'interfaces/user-replays-watched-count-json';
 import { route } from 'laroute';
-import { debounce, keyBy, pullAt } from 'lodash';
+import { debounce, pullAt } from 'lodash';
 import { action, makeObservable, observable, runInAction } from 'mobx';
 import core from 'osu-core-singleton';
 import { error, onErrorWithCallback } from 'utils/ajax';
@@ -79,11 +79,11 @@ interface LazyPages {
 
 export type Page = ProfileExtraPage | 'main';
 
-interface ScorePinReorderParams {
-  order1_score_id?: ScoreCurrentUserPinJson['score_id'];
-  order3_score_id?: ScoreCurrentUserPinJson['score_id'];
-  score_id: ScoreCurrentUserPinJson['score_id'];
-  score_type: ScoreCurrentUserPinJson['score_type'];
+type ScorePinReorderParamsBase = Pick<ScoreCurrentUserPinJson, 'score_id' | 'score_type'>;
+
+interface ScorePinReorderParams extends ScorePinReorderParamsBase {
+  order1?: ScorePinReorderParamsBase;
+  order3?: ScorePinReorderParamsBase;
 }
 
 interface State {
@@ -94,7 +94,7 @@ interface State {
 }
 
 export default class Controller {
-  readonly achievements: Partial<Record<string, AchievementJson>>;
+  readonly achievements: Map<number, AchievementJson>;
   readonly currentMode: GameMode;
   @observable currentPage: Page = 'main';
   readonly debouncedSetDisplayCoverUrl = debounce((url: string | null) => this.setDisplayCoverUrl(url), 300);
@@ -130,7 +130,10 @@ export default class Controller {
       this.state = JSON.parse(savedStateJson) as State;
     }
 
-    this.achievements = keyBy(initialData.achievements, 'id');
+    this.achievements = new Map();
+    for (const achievement of initialData.achievements) {
+      this.achievements.set(achievement.id, achievement);
+    }
     this.currentMode = initialData.current_mode;
     this.scoresNotice = initialData.scores_notice;
     this.displayCoverUrl = this.state.user.cover.url;
@@ -147,8 +150,8 @@ export default class Controller {
 
     const origItems = this.state.lazy.top_ranks.pinned.items.slice();
     const items = this.state.lazy.top_ranks.pinned.items;
-    const adjacentScoreId = items[newIndex]?.id;
-    if (adjacentScoreId == null) {
+    const adjacentScore = items[newIndex];
+    if (adjacentScore == null) {
       throw new Error('invalid newIndex specified');
     }
 
@@ -164,16 +167,14 @@ export default class Controller {
     items.splice(newIndex, 0, target);
     this.saveState();
 
-    const params: ScorePinReorderParams = {
-      score_id: target.current_user_attributes.pin.score_id,
-      score_type: target.current_user_attributes.pin.score_type,
-    };
+    const params: ScorePinReorderParams = target.current_user_attributes.pin;
+    const adjacentParams = adjacentScore.current_user_attributes.pin;
     if (currentIndex > newIndex) {
       // target will be above existing item at index
-      params.order3_score_id = adjacentScoreId;
+      params.order3 = adjacentParams;
     } else {
       // target will be below existing item at index
-      params.order1_score_id = adjacentScoreId;
+      params.order1 = adjacentParams;
     }
 
     showLoadingOverlay();

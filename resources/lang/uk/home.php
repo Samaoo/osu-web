@@ -30,7 +30,7 @@ return [
             'login_required' => 'Увійдіть для пошуку карт',
             'more' => 'більше :count результатів пошуку серед карт',
             'more_simple' => 'Подивитися інші результати пошуку в мапах',
-            'title' => 'Мапи',
+            'title' => 'Бітмапи',
         ],
 
         'forum_post' => [
@@ -43,6 +43,7 @@ return [
             'label' => [
                 'forum' => 'пошук на форумі',
                 'forum_children' => 'включаючи підфоруми',
+                'include_deleted' => 'включаючи видалені публікації',
                 'topic_id' => 'тема #',
                 'username' => 'автор',
             ],
@@ -73,18 +74,19 @@ return [
 
     'download' => [
         'action' => 'Завантажити osu!',
-        'action_lazer' => '',
-        'action_lazer_description' => '',
-        'action_lazer_info' => '',
-        'action_lazer_title' => '',
-        'action_title' => '',
-        'for_os' => '',
-        'lazer_note' => '',
+        'action_lazer' => 'Завантажити osu!(lazer)',
+        'action_lazer_description' => 'наступне глобальне оновлення osu!',
+        'action_lazer_info' => 'перейдіть на цю сторінку для того що дізнатись більше інформації',
+        'action_lazer_title' => 'спробуйте osu!(lazer)',
+        'action_title' => 'завантажити osu!',
+        'for_os' => 'для :os',
+        'lazer_note' => 'примітка: таблиці лідерів можуть бути скинуті',
         'macos-fallback' => 'для macOS',
         'mirror' => 'дзеркало',
-        'or' => '',
-        'other_os' => '',
-        'quick_start_guide' => '',
+        'or' => 'або',
+        'os_version_or_later' => ':os_version або новіше',
+        'other_os' => 'інші платформи',
+        'quick_start_guide' => 'короткий посібник',
         'tagline' => "ну ж бо<br>розпочнімо!",
         'video-guide' => 'відео інструкція',
 

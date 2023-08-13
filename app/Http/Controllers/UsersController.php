@@ -14,7 +14,6 @@ use App\Libraries\Search\ForumSearch;
 use App\Libraries\Search\ForumSearchRequestParams;
 use App\Libraries\User\FindForProfilePage;
 use App\Libraries\UserRegistration;
-use App\Models\Achievement;
 use App\Models\Beatmap;
 use App\Models\BeatmapDiscussion;
 use App\Models\Country;
@@ -272,8 +271,10 @@ class UsersController extends Controller
      * |------------ | -----
      * | favourite   | |
      * | graveyard   | |
+     * | guest       | |
      * | loved       | |
      * | most_played | |
+     * | nominated   | |
      * | pending     | Previously `unranked`
      * | ranked      | Previously `ranked_and_approved`
      *
@@ -390,9 +391,14 @@ class UsersController extends Controller
 
         $params = request()->all();
         $params['username'] = $id;
-        $search = (new ForumSearch(new ForumSearchRequestParams($params)))->size(50);
+        $search = (new ForumSearch(new ForumSearchRequestParams($params, Auth::user())))->size(50);
 
-        return ext_view('users.posts', compact('search', 'user'));
+        $fields = ['user' => null];
+        if (!(Auth::user()?->isModerator() ?? false)) {
+            $fields['includeDeleted'] = null;
+        }
+
+        return ext_view('users.posts', compact('fields', 'search', 'user'));
     }
 
     /**
@@ -632,14 +638,7 @@ class UsersController extends Controller
         if (is_api_request()) {
             return $userArray;
         } else {
-            $achievements = json_collection(
-                Achievement::achievable()
-                    ->orderBy('grouping')
-                    ->orderBy('ordering')
-                    ->orderBy('progression')
-                    ->get(),
-                'Achievement'
-            );
+            $achievements = json_collection(app('medals')->all(), 'Achievement');
 
             $extras = [];
 
@@ -688,7 +687,7 @@ class UsersController extends Controller
             abort(404);
         }
 
-        $this->offset = get_int(Request::input('offset')) ?? 0;
+        $this->offset = max(0, get_int(Request::input('offset')) ?? 0);
 
         if ($this->offset >= $this->maxResults) {
             $this->perPage = 0;
@@ -985,9 +984,9 @@ class UsersController extends Controller
                 return json_item($user->fresh(), new CurrentUserTransformer());
             }
         } catch (ValidationException $e) {
-            return response(['form_error' => [
-                'user' => $registration->user()->validationErrors()->all(),
-            ]], 422);
+            return ModelNotSavedException::makeResponse($e, [
+                'user' => $registration->user(),
+            ]);
         }
     }
 }

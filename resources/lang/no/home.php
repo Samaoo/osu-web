@@ -43,6 +43,7 @@ return [
             'label' => [
                 'forum' => 'søk i forumet',
                 'forum_children' => 'inkluder underkategorier',
+                'include_deleted' => 'inkluder slettede innlegg',
                 'topic_id' => 'emne #',
                 'username' => 'forfatter',
             ],
@@ -73,25 +74,26 @@ return [
 
     'download' => [
         'action' => 'Last ned osu!',
-        'action_lazer' => '',
-        'action_lazer_description' => '',
-        'action_lazer_info' => '',
-        'action_lazer_title' => '',
-        'action_title' => '',
-        'for_os' => '',
-        'lazer_note' => '',
+        'action_lazer' => 'Last ned osu!(lazer)',
+        'action_lazer_description' => 'den neste store oppdateringen til osu!',
+        'action_lazer_info' => 'sjekk denne siden for mer informasjon',
+        'action_lazer_title' => 'prøv osu!(lazer)',
+        'action_title' => 'last ned osu!',
+        'for_os' => 'for :os',
+        'lazer_note' => 'merknad: tilbakestilling av rangeringsliste gjelder',
         'macos-fallback' => 'macOS brukere',
         'mirror' => 'alternativ link',
-        'or' => '',
-        'other_os' => '',
-        'quick_start_guide' => '',
+        'or' => 'eller',
+        'os_version_or_later' => ':os_version eller senere',
+        'other_os' => 'andre plattformer',
+        'quick_start_guide' => 'hurtigveiledning',
         'tagline' => "la oss<br>få deg i gang!",
         'video-guide' => 'video veiledning',
 
         'help' => [
-            '_' => '',
-            'help_forum_link' => '',
-            'support_button' => '',
+            '_' => 'hvis du har problem å starte spillet eller med å registrere en konto, :help_forum_link eller :support_button.',
+            'help_forum_link' => 'sjekk hjelp-forumet',
+            'support_button' => 'kontakt kundestøtte',
         ],
 
         'os' => [

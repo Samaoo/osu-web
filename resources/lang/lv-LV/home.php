@@ -43,6 +43,7 @@ return [
             'label' => [
                 'forum' => '',
                 'forum_children' => '',
+                'include_deleted' => '',
                 'topic_id' => '',
                 'username' => '',
             ],
@@ -72,7 +73,7 @@ return [
     ],
 
     'download' => [
-        'action' => 'Lejuplādēt osu!',
+        'action' => 'Lejupielādēt osu!',
         'action_lazer' => '',
         'action_lazer_description' => '',
         'action_lazer_info' => '',
@@ -83,6 +84,7 @@ return [
         'macos-fallback' => 'macOS lietotāji',
         'mirror' => 'instalācija',
         'or' => '',
+        'os_version_or_later' => '',
         'other_os' => '',
         'quick_start_guide' => '',
         'tagline' => "sagatavosim <br> tevi!",

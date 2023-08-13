@@ -5,14 +5,14 @@ import { DiscussionsContext } from 'beatmap-discussions/discussions-context'
 import { BeatmapsContext } from 'beatmap-discussions/beatmaps-context'
 import NewReview from 'beatmap-discussions/new-review'
 import { ReviewEditorConfigContext } from 'beatmap-discussions/review-editor-config-context'
-import { BackToTop } from 'components/back-to-top'
+import BackToTop from 'components/back-to-top'
 import { route } from 'laroute'
-import { deletedUser } from 'models/user'
+import { deletedUserJson } from 'models/user'
 import core from 'osu-core-singleton'
 import * as React from 'react'
 import { div } from 'react-dom-factories'
 import * as BeatmapHelper from 'utils/beatmap-helper'
-import { stateFromDiscussion } from 'utils/beatmapset-discussion-helper'
+import { defaultFilter, defaultMode, makeUrl, parseUrl, stateFromDiscussion } from 'utils/beatmapset-discussion-helper'
 import { nextVal } from 'utils/seq'
 import { currentUrl } from 'utils/turbolinks'
 import { Discussions } from './discussions'
@@ -150,6 +150,7 @@ export class Main extends React.PureComponent
                   beatmaps: @beatmaps()
                   currentBeatmap: @currentBeatmap()
                   currentUser: @state.currentUser
+                  innerRef: @newDiscussionRef
                   pinned: @state.pinnedNewDiscussion
                   setPinned: @setPinnedNewDiscussion
                   stickTo: @modeSwitcherRef
@@ -355,7 +356,7 @@ export class Main extends React.PureComponent
 
 
   jumpToDiscussionByHash: =>
-    target = BeatmapDiscussionHelper.urlParse(null, @state.beatmapset.discussions)
+    target = parseUrl(null, @state.beatmapset.discussions)
 
     @jumpTo(null, id: target.discussionId, postId: target.postId) if target.discussionId?
 
@@ -371,14 +372,13 @@ export class Main extends React.PureComponent
       if @currentDiscussions().byFilter[@state.currentFilter][newState.mode][id]?
         @state.currentFilter
       else
-        BeatmapDiscussionHelper.DEFAULT_FILTER
+        defaultFilter
 
     if @state.selectedUserId? && @state.selectedUserId != discussion.user_id
       newState.selectedUserId = null
 
     newState.callback = =>
       $.publish 'beatmapset-discussions:highlight', discussionId: discussion.id
-
 
       attribute = if postId? then "data-post-id='#{postId}'" else "data-id='#{id}'"
       target = $(".js-beatmap-discussion-jump[#{attribute}]")
@@ -395,7 +395,7 @@ export class Main extends React.PureComponent
 
   jumpToClick: (e) =>
     url = e.currentTarget.getAttribute('href')
-    { discussionId, postId } = BeatmapDiscussionHelper.urlParse(url, @state.beatmapset.discussions)
+    { discussionId, postId } = parseUrl(url, @state.beatmapset.discussions)
 
     return if !discussionId?
 
@@ -426,7 +426,7 @@ export class Main extends React.PureComponent
 
 
   queryFromLocation: (discussions = @state.beatmapsetDiscussion.beatmap_discussions) =>
-    BeatmapDiscussionHelper.urlParse(null, discussions)
+    parseUrl(null, discussions)
 
 
   saveStateToContainer: =>
@@ -477,7 +477,7 @@ export class Main extends React.PureComponent
 
     if filter?
       if @state.currentMode == 'events'
-        newState.currentMode = @lastMode ? BeatmapDiscussionHelper.DEFAULT_MODE
+        newState.currentMode = @lastMode ? defaultMode(newState.currentBeatmapId)
 
       if filter != @state.currentFilter
         newState.currentFilter = filter
@@ -505,7 +505,7 @@ export class Main extends React.PureComponent
 
 
   urlFromState: =>
-    BeatmapDiscussionHelper.url
+    makeUrl
       beatmap: @currentBeatmap()
       mode: @state.currentMode
       filter: @state.currentFilter
@@ -515,7 +515,7 @@ export class Main extends React.PureComponent
   users: =>
     if !@cache.users?
       @cache.users = _.keyBy @state.beatmapset.related_users, 'id'
-      @cache.users[null] = @cache.users[undefined] = deletedUser.toJson()
+      @cache.users[null] = @cache.users[undefined] = deletedUserJson
 
     @cache.users
 

@@ -33,7 +33,9 @@ class NewsPost extends Model implements Commentable, Wiki\WikiObject
     // in minutes
     const CACHE_DURATION = 86400;
     const VERSION = 3;
+    // should be higher than landing limit
     const DASHBOARD_LIMIT = 8;
+    // also for number of large posts in user dashboard
     const LANDING_LIMIT = 4;
 
     const SORTS = [
@@ -51,10 +53,7 @@ class NewsPost extends Model implements Commentable, Wiki\WikiObject
 
     protected $casts = [
         'page' => 'array',
-    ];
-
-    protected $dates = [
-        'published_at',
+        'published_at' => 'datetime',
     ];
 
     public static function lookup($slug)
