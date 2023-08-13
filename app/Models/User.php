@@ -49,6 +49,7 @@ use Request;
  * @property-read Collection<Beatmap> $beatmaps
  * @property-read Collection<BeatmapsetNomination> $beatmapsetNominations
  * @property-read Collection<BeatmapsetUserRating> $beatmapsetRatings
+ * @property-read Collection<BeatmapUserRating> $beatmapRatings
  * @property-read Collection<BeatmapsetWatch> $beatmapsetWatches
  * @property-read Collection<Beatmapset> $beatmapsets
  * @property-read Collection<static> $blocks
@@ -868,6 +869,7 @@ class User extends Model implements AfterCommit, AuthenticatableContract, HasLoc
             'beatmapPlaycounts',
             'beatmaps',
             'beatmapsetNominations',
+            'beatmapRatings',
             'beatmapsetRatings',
             'beatmapsetWatches',
             'beatmapsets',
@@ -1600,6 +1602,11 @@ class User extends Model implements AfterCommit, AuthenticatableContract, HasLoc
     public function events()
     {
         return $this->hasMany(Event::class);
+    }
+
+    public function beatmapRatings()
+    {
+        return $this->hasMany(BeatmapUserRating::class);
     }
 
     public function beatmapsetRatings()

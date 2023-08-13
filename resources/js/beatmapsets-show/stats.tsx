@@ -19,7 +19,7 @@ export default class Stats extends React.Component<Props> {
   // the one in beatmapset has invalid rating 0 data in it
   @computed
   private get ratings() {
-    return this.props.controller.beatmapset.ratings.slice(1);
+    return this.props.controller.currentBeatmap.ratings?.slice(1) ?? this.props.controller.beatmapset.ratings.slice(1);
   }
 
   private get statKeys() {

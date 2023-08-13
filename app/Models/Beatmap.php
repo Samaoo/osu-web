@@ -41,8 +41,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $passcount
  * @property int $playcount
  * @property int $playmode
+ * @property float $rating
  * @property int $score_version
  * @property int $total_length
+ * @property \Illuminate\Database\Eloquent\Collection $userRatings BeatmapsetUserRating
  * @property int $user_id
  * @property string $version
  * @property string|null $youtube_preview
@@ -223,6 +225,11 @@ class Beatmap extends Model implements AfterCommit
         return $this->playmode === static::MODES['osu'];
     }
 
+    public function userRatings()
+    {
+        return $this->hasMany(BeatmapUserRating::class);
+    }
+
     public function getAttribute($key)
     {
         return match ($key) {
@@ -272,6 +279,7 @@ class Beatmap extends Model implements AfterCommit
             'scoresBestMania',
             'scoresBestOsu',
             'scoresBestTaiko',
+            'userRatings',
             'user' => $this->getRelationValue($key),
         };
     }
@@ -293,6 +301,32 @@ class Beatmap extends Model implements AfterCommit
         }
 
         return $maxCombo?->value;
+    }
+
+    public function ratingsCount()
+    {
+        $ratings = [];
+
+        for ($i = 0; $i <= 10; $i++) {
+            $ratings[$i] = 0;
+        }
+
+        if ($this->relationLoaded('userRatings')) {
+            foreach ($this->userRatings as $userRating) {
+                $ratings[$userRating->rating]++;
+            }
+        } else {
+            $userRatings = $this->userRatings()
+                ->select('rating', DB::raw('count(*) as count'))
+                ->groupBy('rating')
+                ->get();
+
+            foreach ($userRatings as $rating) {
+                $ratings[$rating->rating] = $rating->count;
+            }
+        }
+
+        return $ratings;
     }
 
     public function setOwner($newUserId)
